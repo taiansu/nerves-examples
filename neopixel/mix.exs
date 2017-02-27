@@ -5,7 +5,7 @@ defmodule Neopixel.Mixfile do
 
   def project do
     [app: :neopixel,
-     version: "0.1.0",
+     version: "0.2.0",
      elixir: "~> 1.4.0",
      target: @target,
      archives: [nerves_bootstrap: "~> 0.2.1"],
@@ -22,12 +22,12 @@ defmodule Neopixel.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Neopixel, []},
-     applications: [:logger, :nerves_neopixel]]
+     extra_applications: [:logger]]
   end
 
   def deps do
     [{:nerves, "~> 0.4.7"},
-     {:nerves_neopixel, "~> 0.3.0"}]
+     {:nerves_neopixel, github: "GregMefford/nerves_neopixel", branch: "rgbw", submodules: true}]
   end
 
   def system(target) do

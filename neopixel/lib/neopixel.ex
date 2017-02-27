@@ -9,11 +9,11 @@ defmodule Neopixel do
     ch0_config = Application.get_env(:neopixel, :channel0)
     ch1_config = Application.get_env(:neopixel, :channel1)
 
+    spawn fn -> start_animations(ch0_config, ch1_config) end
+
     # Define workers and child supervisors to be supervised
     children = [
-      worker(Nerves.Neopixel, [ch0_config, ch1_config]),
-      #worker(Task, [fn -> Neopixel.Animate.spinner(0, ch0_config[:count], color: {0, 0, 255}) end], id: :spinner),
-      #worker(Task, [fn -> Neopixel.Animate.pulse(1, ch1_config[:count], color: {0, 0, 255}) end], id: :pulse)
+      worker(Nerves.Neopixel, [ch0_config, ch1_config])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
@@ -22,4 +22,10 @@ defmodule Neopixel do
     Supervisor.start_link(children, opts)
   end
 
+  defp start_animations(ch0_config, ch1_config) do
+    Process.sleep 1000
+    Neopixel.Animate.rainbow(0, ch0_config[:count])
+    # Neopixel.Animate.spinner(0, ch0_config[:count])
+    Neopixel.Animate.pulse(1, ch1_config[:count])
+  end
 end

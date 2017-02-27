@@ -16,11 +16,13 @@ use Mix.Config
 
 config :neopixel, :channel0,
   pin: 18,
-  count: 36
+  count: 36,
+  type: :grb
 
 config :neopixel, :channel1,
   pin: 19,
-  count: 21
+  count: 21,
+  type: :grbw
 
 # Import target specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
