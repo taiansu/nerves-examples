@@ -20,16 +20,13 @@ defmodule Blinky.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(@target),
-     deps: deps()]
+     deps: deps(@target)]
   end
 
   # Configuration for the OTP application.
   #
   # Type `mix help compile.app` for more information.
-  def application do
-    [mod: {Blinky, []},
-     extra_applications: [:logger]]
-  end
+  def application, do: application(@target)
 
   # Specify target specific application configurations
   # It is common that the application start function will start and supervise
@@ -50,20 +47,32 @@ defmodule Blinky.Mixfile do
   # Or git/path repositories:
   #
   #   {:my_dep, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+  #   {:my_dep, path: "../my_dep"}
   #
   # Type "mix help deps" for more examples and options
-  def deps do
-    [{:nerves, "~> 0.5.1", runtime: false}] ++
-    deps(@target)
+  def deps("host") do
+    [{:nerves, "~> 0.5.1", runtime: false}]
+  end
+  def deps(target) do
+    [ system(target),
+      {:nerves, "~> 0.5.1", runtime: false},
+      {:nerves_runtime, "~> 0.1.0"},
+      {:nerves_leds, "~> 0.7.0"},
+    ]
   end
 
-  # Specify target specific dependencies
-  def deps("host"), do: []
-  def deps(target) do
-    [{:nerves_runtime, "~> 0.1.0"},
-     {:"nerves_system_#{target}", "~> 0.12.0", runtime: false},
-     {:nerves_leds, "~> 0.7.0"}]
-  end
+  # Specify the version of the System to use for each target
+  def system("rpi0"), do:       {:nerves_system_rpi0,       "~> 0.12.0", runtime: false}
+  def system("rpi"), do:        {:nerves_system_rpi,        "~> 0.12.0", runtime: false}
+  def system("rpi2"), do:       {:nerves_system_rpi2,       "~> 0.12.1", runtime: false}
+  def system("rpi3"), do:       {:nerves_system_rpi3,       "~> 0.12.0", runtime: false}
+  def system("bbb"), do:        {:nerves_system_bbb,        "~> 0.12.0", runtime: false}
+  def system("alix"), do:       {:nerves_system_alix,       "~> 0.7.0",  runtime: false}
+  def system("ag150"), do:      {:nerves_system_ag150,      "~> 0.7.0",  runtime: false}
+  def system("galileo"), do:    {:nerves_system_galileo,    "~> 0.7.0",  runtime: false}
+  def system("ev3"), do:        {:nerves_system_ev3,        "~> 0.11.0", runtime: false}
+  def system("linkit"), do:     {:nerves_system_linkit,     "~> 0.11.0", runtime: false}
+  def system("qemu_arm"), do:   {:nerves_system_qemu_arm,   "~> 0.11.0", runtime: false}
 
   # We do not invoke the Nerves Env when running on the Host
   def aliases("host"), do: []
